@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Task Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Claude Task Dashboard</h1>
+            <div class="header-actions">
+                <button id="refreshBtn" class="btn-refresh" title="更新">🔄</button>
+                <button id="addTaskBtn" class="btn-add">+ 追加</button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="claude">Claude Sessions</button>
+            <button class="tab" data-tab="manual">手動タスク</button>
+        </div>
+
+        <!-- Claude Sessions Tab -->
+        <div id="claudeTab" class="tab-content active">
+            <div class="status-bar">
+                <span id="lastUpdate">最終更新: --</span>
+                <span id="autoRefresh">自動更新: 10秒</span>
+            </div>
+
+            <section class="task-section">
+                <h2>アクティブ (5分以内) <span id="activeCount">(0)</span></h2>
+                <div class="task-grid" id="activeSessions"></div>
+            </section>
+
+            <section class="task-section">
+                <h2>最近 (1時間以内) <span id="recentCount">(0)</span></h2>
+                <div class="task-grid" id="recentSessions"></div>
+            </section>
+
+            <section class="task-section collapsed">
+                <h2 class="collapsible">過去のセッション <span id="oldCount">(0)</span></h2>
+                <div class="task-grid" id="oldSessions"></div>
+            </section>
+        </div>
+
+        <!-- Manual Tasks Tab -->
+        <div id="manualTab" class="tab-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+
+            <section class="task-section">
+                <h2>進行中 <span id="inProgressCount">(0)</span></h2>
+                <div class="task-grid" id="inProgressTasks"></div>
+            </section>
+
+            <section class="task-section">
+                <h2>待機中 <span id="pendingCount">(0)</span></h2>
+                <div class="task-grid" id="pendingTasks"></div>
+            </section>
+
+            <section class="task-section">
+                <h2>完了 <span id="completedCount">(0)</span></h2>
+                <div class="task-grid" id="completedTasks"></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">タスクを追加</h3>
+            <input type="text" id="taskName" placeholder="タスク名（例: LINE Bot開発）" maxlength="50">
+            <textarea id="taskDescription" placeholder="説明（任意）" maxlength="200"></textarea>
+            <select id="taskStatus">
+                <option value="pending">待機中</option>
+                <option value="in_progress">進行中</option>
+                <option value="completed">完了</option>
+            </select>
+            <div class="modal-buttons">
+                <button id="saveTaskBtn" class="btn-save">保存</button>
+                <button id="cancelBtn" class="btn-cancel">キャンセル</button>
+                <button id="deleteTaskBtn" class="btn-delete" style="display: none;">削除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Server Connection Status -->
+    <div id="serverStatus" class="server-status disconnected">
+        サーバー未接続
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
