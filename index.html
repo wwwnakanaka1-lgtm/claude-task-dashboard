@@ -11,14 +11,86 @@
         <header>
             <h1>Claude Task Dashboard</h1>
             <div class="header-actions">
+                <button id="configBtn" class="btn-config" title="設定">⚙️</button>
                 <button id="refreshBtn" class="btn-refresh" title="更新">🔄</button>
                 <button id="addTaskBtn" class="btn-add">+ 追加</button>
             </div>
         </header>
 
+        <!-- API Usage Section (Anthropic API) -->
+        <div class="api-usage-section" id="apiUsageSection" style="display: none;">
+            <div class="api-usage-header">
+                <span class="api-usage-title">API使用量（Anthropic API）</span>
+                <span class="api-usage-status" id="apiUsageStatus"></span>
+            </div>
+            <div class="api-usage-cards">
+                <div class="api-usage-card" id="apiRateLimitCard">
+                    <div class="api-card-label">レート制限</div>
+                    <div class="api-card-value" id="apiRateLimitValue">--%</div>
+                    <div class="api-card-sub" id="apiRateLimitReset">--</div>
+                    <div class="api-rate-bar">
+                        <div class="api-rate-fill" id="apiRateFill"></div>
+                    </div>
+                </div>
+                <div class="api-usage-card" id="apiTodayCard">
+                    <div class="api-card-label">今日</div>
+                    <div class="api-card-value" id="apiTodayCost">$--</div>
+                    <div class="api-card-sub" id="apiTodayTokens">-- tokens</div>
+                </div>
+                <div class="api-usage-card" id="apiMonthCard">
+                    <div class="api-card-label">今月</div>
+                    <div class="api-card-value" id="apiMonthCost">$--</div>
+                    <div class="api-card-sub" id="apiMonthTokens">-- tokens</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rate Limit Status (Fallback/Local) -->
+        <div class="rate-limit-container" id="rateLimitContainer">
+            <div class="rate-limit-header">
+                <span class="rate-limit-title" id="rateLimitTitle">プラン使用制限（推定）</span>
+                <div class="rate-limit-actions">
+                    <button id="syncRateLimitBtn" class="btn-sync" title="手動同期">🔄</button>
+                    <span class="rate-limit-reset" id="rateLimitReset">--</span>
+                </div>
+            </div>
+            <div class="rate-limit-bar">
+                <div class="rate-limit-fill" id="rateLimitFill"></div>
+            </div>
+            <div class="rate-limit-info">
+                <span class="rate-limit-percent" id="rateLimitPercent">--%</span>
+                <span class="rate-limit-tokens" id="rateLimitTokens">出力: --</span>
+            </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-summary" id="statsSummary">
+            <div class="stat-item">
+                <span class="stat-value" id="statMessages">--</span>
+                <span class="stat-label">今日のメッセージ</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="statTodayTokens">--</span>
+                <span class="stat-label">今日のコスト</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="statWeekTokens">--</span>
+                <span class="stat-label">今週のコスト</span>
+            </div>
+            <div class="stat-item highlight">
+                <span class="stat-value" id="statMonthTokens">--</span>
+                <span class="stat-label">今月のコスト</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="statLastMonthTokens">--</span>
+                <span class="stat-label">先月のコスト</span>
+            </div>
+        </div>
+
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab active" data-tab="claude">Claude Sessions</button>
+            <button class="tab" data-tab="history">使用量履歴</button>
             <button class="tab" data-tab="manual">手動タスク</button>
         </div>
 
@@ -42,6 +114,24 @@
             <section class="task-section collapsed">
                 <h2 class="collapsible">過去のセッション <span id="oldCount">(0)</span></h2>
                 <div class="task-grid" id="oldSessions"></div>
+            </section>
+        </div>
+
+        <!-- Usage History Tab -->
+        <div id="historyTab" class="tab-content">
+            <section class="history-section">
+                <h2>月別使用量</h2>
+                <div class="monthly-chart" id="monthlyChart"></div>
+            </section>
+
+            <section class="history-section">
+                <h2>日別使用量（過去30日）</h2>
+                <div class="daily-chart" id="dailyChart"></div>
+            </section>
+
+            <section class="history-section">
+                <h2>月別サマリー</h2>
+                <div class="monthly-table" id="monthlyTable"></div>
             </section>
         </div>
 
@@ -84,6 +174,90 @@
                 <button id="saveTaskBtn" class="btn-save">保存</button>
                 <button id="cancelBtn" class="btn-cancel">キャンセル</button>
                 <button id="deleteTaskBtn" class="btn-delete" style="display: none;">削除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Title Edit Modal -->
+    <div class="modal" id="titleModal">
+        <div class="modal-content">
+            <h3>タイトルを編集</h3>
+            <input type="text" id="editTitleInput" placeholder="カスタムタイトル" maxlength="100">
+            <p class="original-title" id="originalTitle"></p>
+            <div class="modal-buttons">
+                <button id="saveTitleBtn" class="btn-save">保存</button>
+                <button id="cancelTitleBtn" class="btn-cancel">キャンセル</button>
+                <button id="resetTitleBtn" class="btn-delete">リセット</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Detail Modal -->
+    <div class="modal" id="sessionModal">
+        <div class="modal-content modal-large">
+            <h3 id="sessionModalTitle">セッション詳細</h3>
+            <div class="session-info" id="sessionInfo"></div>
+            <div class="session-tasks">
+                <h4>タスク進捗</h4>
+                <div class="task-progress-bar" id="taskProgressBar">
+                    <div class="task-progress-fill" id="taskProgressFill"></div>
+                </div>
+                <span class="task-progress-text" id="taskProgressText">0%</span>
+                <div class="task-list" id="taskList"></div>
+            </div>
+            <div class="modal-buttons">
+                <button id="closeSessionBtn" class="btn-cancel">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Limit Sync Modal -->
+    <div class="modal" id="rateLimitModal">
+        <div class="modal-content">
+            <h3>レート制限を同期</h3>
+            <p class="modal-hint">Claudeの「プラン使用制限」から値を入力してください</p>
+            <div class="sync-input-group">
+                <label>使用率 (%)</label>
+                <input type="number" id="syncPercent" min="0" max="100" placeholder="50">
+            </div>
+            <div class="sync-input-group">
+                <label>リセットまでの時間</label>
+                <div class="time-inputs">
+                    <input type="number" id="syncHours" min="0" max="5" placeholder="2">
+                    <span>時間</span>
+                    <input type="number" id="syncMinutes" min="0" max="59" placeholder="30">
+                    <span>分</span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveSyncBtn" class="btn-save">同期</button>
+                <button id="cancelSyncBtn" class="btn-cancel">キャンセル</button>
+                <button id="resetSyncBtn" class="btn-delete">推定に戻す</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Config Modal -->
+    <div class="modal" id="configModal">
+        <div class="modal-content">
+            <h3>Anthropic API 設定</h3>
+            <p class="modal-hint">APIキーを設定すると、正確な使用量とレート制限を取得できます</p>
+
+            <div class="config-status" id="configStatus">
+                <span class="config-label">現在の設定:</span>
+                <span class="config-value" id="configKeyStatus">未設定</span>
+            </div>
+
+            <div class="sync-input-group">
+                <label>Anthropic API Key</label>
+                <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+                <p class="input-hint">Admin APIキー (sk-ant-admin-...) で使用量レポートも取得可能</p>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="saveConfigBtn" class="btn-save">保存</button>
+                <button id="cancelConfigBtn" class="btn-cancel">キャンセル</button>
+                <button id="deleteConfigBtn" class="btn-delete">削除</button>
             </div>
         </div>
     </div>

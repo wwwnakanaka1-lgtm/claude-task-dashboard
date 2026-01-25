@@ -444,6 +444,8 @@ h1 {
     color: #888;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 8px;
     margin-top: 10px;
 }
 
@@ -451,4 +453,816 @@ h1 {
     background: #1a1a2e;
     padding: 2px 8px;
     border-radius: 10px;
+}
+
+.session-card .task-summary {
+    background: #1a1a2e;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+}
+
+.session-card .task-summary.active {
+    background: #2d4a3e;
+    color: #4ade80;
+}
+
+.session-card .task-summary.completed {
+    background: #1a3a2e;
+    color: #22c55e;
+}
+
+.session-card .task-summary.pending {
+    background: #3a3a1e;
+    color: #fbbf24;
+}
+
+/* Stats Summary */
+.stats-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #2d2d44;
+    border-radius: 12px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4f46e5;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 4px;
+}
+
+.stat-item.highlight {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.stat-item.highlight .stat-value {
+    color: #fff;
+}
+
+.stat-item.highlight .stat-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Session Detail Modal */
+.modal-large {
+    max-width: 600px;
+}
+
+.session-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #1a1a2e;
+    border-radius: 8px;
+}
+
+.session-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.session-tasks h4 {
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.task-progress-bar {
+    background: #1a1a2e;
+    border-radius: 10px;
+    height: 20px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.task-progress-fill {
+    background: linear-gradient(90deg, #10b981, #34d399);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.task-progress-text {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.task-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #1a1a2e;
+    border-radius: 8px;
+    border-left: 3px solid #6b7280;
+}
+
+.todo-item.completed {
+    border-left-color: #10b981;
+    opacity: 0.7;
+}
+
+.todo-item.in_progress {
+    border-left-color: #f59e0b;
+}
+
+.todo-icon {
+    font-size: 1.1rem;
+}
+
+.todo-content {
+    font-size: 0.9rem;
+    color: #e0e0e0;
+}
+
+.no-tasks {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Card inline tasks */
+.card-tasks {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #3d3d54;
+}
+
+.card-progress-bar {
+    background: #1a1a2e;
+    border-radius: 6px;
+    height: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.card-progress-fill {
+    background: linear-gradient(90deg, #10b981, #34d399);
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.card-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-todo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #aaa;
+    padding: 4px 0;
+}
+
+.card-todo.completed {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.card-todo.in_progress {
+    color: #f59e0b;
+}
+
+.more-tasks {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.no-tasks-small {
+    font-size: 0.75rem;
+    color: #555;
+    font-style: italic;
+}
+
+/* Card header with edit button */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.card-header h3 {
+    flex: 1;
+    margin-bottom: 8px;
+}
+
+.card-header h3.custom-title {
+    color: #a78bfa;
+}
+
+.btn-edit-title {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    padding: 4px;
+}
+
+.session-card:hover .btn-edit-title {
+    opacity: 1;
+}
+
+.btn-edit-title:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Original title in modal */
+.original-title {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #1a1a2e;
+    border-radius: 6px;
+    word-break: break-word;
+}
+
+/* Session usage gauge */
+.session-usage {
+    margin-top: 12px;
+    padding: 10px;
+    background: #1a1a2e;
+    border-radius: 8px;
+}
+
+.usage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.usage-label {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.usage-cost {
+    font-size: 0.8rem;
+    color: #10b981;
+    font-weight: bold;
+}
+
+.usage-gauge {
+    height: 8px;
+    background: #2d2d44;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.usage-gauge-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Usage gauge color based on percentage */
+.usage-gauge-fill.warning {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.usage-gauge-fill.danger {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.usage-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.usage-percent {
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+.usage-percent.warning {
+    color: #f59e0b;
+}
+
+.usage-percent.danger {
+    color: #ef4444;
+}
+
+/* Cache tokens display */
+.usage-cache {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: #888;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #3d3d54;
+}
+
+.cache-label {
+    color: #7c3aed;
+}
+
+/* History Section */
+.history-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #2d2d44;
+    border-radius: 12px;
+}
+
+.history-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+/* Monthly chart (bar chart) */
+.monthly-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 200px;
+    padding: 10px 0;
+}
+
+.chart-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+}
+
+.chart-bar {
+    width: 100%;
+    max-width: 60px;
+    background: linear-gradient(180deg, #4f46e5, #7c3aed);
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 10px;
+    transition: height 0.3s ease;
+}
+
+.chart-value {
+    font-size: 0.7rem;
+    color: #fff;
+    font-weight: bold;
+    padding: 4px;
+    white-space: nowrap;
+}
+
+.chart-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 8px;
+}
+
+.chart-cost {
+    font-size: 0.65rem;
+    color: #10b981;
+    margin-top: 2px;
+}
+
+/* Daily chart */
+.daily-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 100px;
+    padding: 10px 0;
+    overflow-x: auto;
+}
+
+.daily-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 16px;
+    height: 100%;
+}
+
+.daily-bar {
+    width: 100%;
+    background: linear-gradient(180deg, #3b82f6, #60a5fa);
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+    transition: height 0.3s ease;
+}
+
+.daily-bar-container:hover .daily-bar {
+    background: linear-gradient(180deg, #4f46e5, #7c3aed);
+}
+
+.daily-label {
+    font-size: 0.6rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Monthly table */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table th,
+.summary-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #3d3d54;
+}
+
+.summary-table th {
+    color: #888;
+    font-weight: normal;
+    font-size: 0.85rem;
+}
+
+.summary-table td {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+}
+
+.summary-table tr:hover td {
+    background: #1a1a2e;
+}
+
+.summary-table .cost-cell {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.summary-table .cost-cell small {
+    color: #666;
+    font-weight: normal;
+}
+
+/* Rate Limit Container */
+.rate-limit-container {
+    background: #2d2d44;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #3d3d54;
+}
+
+.rate-limit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.rate-limit-title {
+    font-size: 0.9rem;
+    color: #a0a0a0;
+}
+
+.rate-limit-reset {
+    font-size: 0.85rem;
+    color: #888;
+    background: #1a1a2e;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.rate-limit-bar {
+    height: 12px;
+    background: #1a1a2e;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.rate-limit-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.rate-limit-fill.warning {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.rate-limit-fill.danger {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.rate-limit-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rate-limit-percent {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+.rate-limit-percent.warning {
+    color: #f59e0b;
+}
+
+.rate-limit-percent.danger {
+    color: #ef4444;
+}
+
+.rate-limit-tokens {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.rate-limit-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-sync {
+    background: transparent;
+    border: 1px solid #3d3d54;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.btn-sync:hover {
+    opacity: 1;
+    border-color: #4f46e5;
+    background: #1a1a2e;
+}
+
+/* Synced state */
+.rate-limit-container.synced {
+    border-color: #10b981;
+}
+
+.rate-limit-container.synced .rate-limit-title {
+    color: #10b981;
+}
+
+.rate-limit-container.synced .btn-sync {
+    border-color: #10b981;
+    opacity: 1;
+}
+
+/* Sync modal specific */
+.modal-hint {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.sync-input-group {
+    margin-bottom: 15px;
+}
+
+.sync-input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+.sync-input-group input[type="number"] {
+    width: 80px;
+    padding: 10px;
+    margin-right: 5px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.sync-input-group input[type="number"]:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+.time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.time-inputs span {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* API Usage Section */
+.api-usage-section {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1a2d4a 100%);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #2d4a6a;
+}
+
+.api-usage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.api-usage-title {
+    font-size: 0.9rem;
+    color: #60a5fa;
+    font-weight: 500;
+}
+
+.api-usage-status {
+    font-size: 0.75rem;
+    color: #888;
+    background: #1a1a2e;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.api-usage-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.api-usage-card {
+    background: #1a2d4a;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #2d4a6a;
+}
+
+.api-card-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.api-card-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.api-card-sub {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.api-rate-bar {
+    height: 6px;
+    background: #0d1929;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.api-rate-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.api-rate-fill.warning {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.api-rate-fill.danger {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+/* Config Button */
+.btn-config {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.btn-config:hover {
+    background: #333;
+    border-color: #666;
+    color: #fff;
+}
+
+/* Config Modal */
+.config-status {
+    background: #1a1a2e;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.config-label {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.config-value {
+    color: #fff;
+    font-size: 0.85rem;
+}
+
+.config-value.configured {
+    color: #10b981;
+}
+
+.config-value.admin {
+    color: #60a5fa;
+}
+
+.config-value.oauth {
+    color: #a855f7;  /* Purple for OAuth/Max plan */
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 8px;
+}
+
+.sync-input-group input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: monospace;
+}
+
+.sync-input-group input[type="password"]:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+/* Responsive API cards */
+@media (max-width: 600px) {
+    .api-usage-cards {
+        grid-template-columns: 1fr;
+    }
 }
