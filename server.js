@@ -51,6 +51,49 @@ let anthropicCache = {
     lastRateLimitFetch: null
 };
 
+// Exchange rate cache
+let exchangeRateCache = {
+    rate: 150,           // Fallback rate
+    source: 'fallback',  // 'api' or 'fallback'
+    lastFetch: null,
+    cacheDuration: 24 * 60 * 60 * 1000  // 24 hours
+};
+
+// Fetch USD/JPY exchange rate from free API
+async function fetchExchangeRate() {
+    const now = Date.now();
+
+    // Return cached value if still valid
+    if (exchangeRateCache.lastFetch &&
+        (now - exchangeRateCache.lastFetch) < exchangeRateCache.cacheDuration) {
+        return exchangeRateCache;
+    }
+
+    try {
+        const https = require('https');
+        const response = await new Promise((resolve, reject) => {
+            https.get('https://open.er-api.com/v6/latest/USD', (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => resolve(JSON.parse(data)));
+            }).on('error', reject);
+        });
+
+        if (response.rates && response.rates.JPY) {
+            exchangeRateCache.rate = Math.round(response.rates.JPY * 100) / 100;
+            exchangeRateCache.source = 'api';
+            exchangeRateCache.lastFetch = now;
+            console.log(`Exchange rate updated: $1 = ¥${exchangeRateCache.rate}`);
+        }
+    } catch (err) {
+        console.warn('Failed to fetch exchange rate, using fallback:', err.message);
+        exchangeRateCache.source = 'fallback';
+        exchangeRateCache.lastFetch = now;
+    }
+
+    return exchangeRateCache;
+}
+
 // Load dashboard config
 function loadConfig() {
     try {
@@ -1278,6 +1321,22 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API: Exchange Rate
+    if (url.pathname === '/api/exchange-rate') {
+        fetchExchangeRate().then(result => {
+            res.writeHead(200, { 'Content-Type': 'application/json', ...corsHeaders });
+            res.end(JSON.stringify({
+                rate: result.rate,
+                source: result.source,
+                lastFetch: result.lastFetch ? new Date(result.lastFetch).toISOString() : null
+            }));
+        }).catch(err => {
+            res.writeHead(500, { 'Content-Type': 'application/json', ...corsHeaders });
+            res.end(JSON.stringify({ error: err.message, rate: 150, source: 'fallback' }));
+        });
+        return;
+    }
+
     // API: Anthropic Usage (Admin key only)
     if (url.pathname === '/api/anthropic/usage') {
         fetchAnthropicUsage().then(result => {
@@ -1312,8 +1371,10 @@ buildCostCache();
 buildRateLimitCache();
 startCacheRefresh();
 
-server.listen(PORT, () => {
-    console.log(`
+// Fetch exchange rate on startup
+fetchExchangeRate().then(() => {
+    server.listen(PORT, () => {
+        console.log(`
 ╔════════════════════════════════════════════════╗
 ║   Claude Task Dashboard Server                 ║
 ╠════════════════════════════════════════════════╣
@@ -1323,6 +1384,8 @@ server.listen(PORT, () => {
 
 Monitoring: ${SESSIONS_FILE}
 Cost cache: ${costCache.isReady ? 'Ready' : 'Building...'}
+Exchange rate: $1 = ¥${exchangeRateCache.rate} (${exchangeRateCache.source})
 Press Ctrl+C to stop.
 `);
+    });
 });

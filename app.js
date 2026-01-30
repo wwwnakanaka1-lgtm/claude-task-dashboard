@@ -17,11 +17,14 @@ class TaskDashboard {
         this.hasApiKey = false;
         this.isRenderingSessions = false;  // Prevent concurrent session renders
         this.todosCache = {};  // Cache todos by session ID
+        this.exchangeRate = 150;  // Default/fallback rate
+        this.exchangeRateSource = 'fallback';
 
         this.initElements();
         this.bindEvents();
         this.requestNotificationPermission();
         this.render();
+        this.fetchExchangeRate();  // Fetch current exchange rate
         this.fetchSessions();
         this.fetchStats();
         this.fetchRateLimit();
@@ -259,6 +262,22 @@ class TaskDashboard {
             this.renderStats(stats);
         } catch (err) {
             console.error('Failed to fetch stats:', err);
+        }
+    }
+
+    async fetchExchangeRate() {
+        try {
+            const response = await fetch(`${API_BASE}/exchange-rate`);
+            if (!response.ok) return;
+
+            const data = await response.json();
+            if (data.rate) {
+                this.exchangeRate = data.rate;
+                this.exchangeRateSource = data.source || 'api';
+                console.log(`Exchange rate: $1 = ¥${this.exchangeRate} (${this.exchangeRateSource})`);
+            }
+        } catch (err) {
+            console.warn('Failed to fetch exchange rate, using fallback:', err);
         }
     }
 
@@ -739,7 +758,7 @@ class TaskDashboard {
     }
 
     formatCost(costUSD) {
-        const costJPY = Math.round(costUSD * 150);
+        const costJPY = Math.round(costUSD * this.exchangeRate);
         if (costJPY >= 10000) {
             return '¥' + (costJPY / 10000).toFixed(1) + '万';
         }
@@ -755,7 +774,7 @@ class TaskDashboard {
             const maxCost = Math.max(...monthlySummary.map(m => m.costUSD));
             this.monthlyChart.innerHTML = monthlySummary.map(m => {
                 const heightPercent = maxCost > 0 ? (m.costUSD / maxCost) * 100 : 0;
-                const costJPY = Math.round(m.costUSD * 150);
+                const costJPY = Math.round(m.costUSD * this.exchangeRate);
                 return `
                     <div class="chart-bar-container">
                         <div class="chart-bar" style="height: ${heightPercent}%">
@@ -776,7 +795,7 @@ class TaskDashboard {
                 const cost = d.cost || 0;
                 const heightPercent = maxCost > 0 ? (cost / maxCost) * 100 : 0;
                 const day = d.date.substring(8);
-                const costJPY = Math.round(cost * 150);
+                const costJPY = Math.round(cost * this.exchangeRate);
                 return `
                     <div class="daily-bar-container" title="${d.date}: ¥${costJPY.toLocaleString()}">
                         <div class="daily-bar" style="height: ${heightPercent}%"></div>
@@ -802,7 +821,7 @@ class TaskDashboard {
                     </thead>
                     <tbody>
                         ${monthlySummary.slice().reverse().map(m => {
-                            const costJPY = Math.round(m.costUSD * 150);
+                            const costJPY = Math.round(m.costUSD * this.exchangeRate);
                             const cacheTotal = (m.cacheReadTokens || 0) + (m.cacheCreationTokens || 0);
                             return `
                                 <tr>
@@ -912,7 +931,7 @@ class TaskDashboard {
         }
 
         // Cost in JPY (approximate rate: 1 USD = 150 JPY)
-        const costJPY = Math.round(estimatedCost * 150);
+        const costJPY = Math.round(estimatedCost * this.exchangeRate);
 
         // Check if cache tokens are significant
         const hasCacheTokens = cacheReadTokens > 0 || cacheCreationTokens > 0;
